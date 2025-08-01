@@ -4,6 +4,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"video-service/internal/config"
+	"video-service/internal/migration"
 	"video-service/pkg/database"
 )
 
@@ -33,15 +34,19 @@ func (a *App) Run() {
 }
 
 func createDB(cfg *config.Config) (*pgxpool.Pool, error) {
-	// Инициализация Postgres
-	db, err := database.NewPostgres(database.Config{
+	databaseConfig := database.Config{
 		Host:     cfg.Postgres.Host,
 		Port:     cfg.Postgres.Port,
 		User:     cfg.Postgres.User,
 		Password: cfg.Postgres.Password,
 		DBName:   cfg.Postgres.DBName,
 		SSLMode:  cfg.Postgres.SSLMode,
-	})
+	}
+
+	migration.Run(databaseConfig)
+
+	// Инициализация Postgres
+	db, err := database.NewPostgres(databaseConfig)
 
 	return db, err
 }

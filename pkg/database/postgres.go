@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Config struct {
@@ -19,7 +18,7 @@ type Config struct {
 // NewPostgres – подключение к PostgresSQL.
 func NewPostgres(cfg Config) (*pgxpool.Pool, error) {
 	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s",
+		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName,
 	)
 
